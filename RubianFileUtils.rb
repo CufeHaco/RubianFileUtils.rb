@@ -61,7 +61,7 @@ module RubianFileUtils
     
     # Display directory tree structure
     def rubian_tree(path: ".", max_depth: 1, show_hidden: false, dirs_only: true)
-      puts "📁 #{File.expand_path(path)}"
+      puts "[DIR] #{File.expand_path(path)}"
       display_tree(path, "", 0, max_depth, show_hidden, dirs_only)
     end
     
@@ -92,13 +92,13 @@ module RubianFileUtils
       else
         FileUtils.cp(source, destination, verbose: verbose)
       end
-      puts "✓ Copied: #{source} → #{destination}" if verbose
+      puts "Copied: #{source} -> #{destination}" if verbose
     end
     
     # Move files
     def rubian_move(source, destination, verbose: false)
       FileUtils.mv(source, destination, verbose: verbose)
-      puts "✓ Moved: #{source} → #{destination}" if verbose
+      puts "Moved: #{source} -> #{destination}" if verbose
     end
     
     # Create directory structure
@@ -108,7 +108,7 @@ module RubianFileUtils
       else
         Dir.mkdir(path)
       end
-      puts "✓ Created: #{path}" if verbose
+      puts "Created: #{path}" if verbose
     end
     
     # Fast file search using cached directories
@@ -158,10 +158,10 @@ module RubianFileUtils
       archive_name ||= "#{File.basename(source_path)}_#{Time.now.strftime('%Y%m%d_%H%M%S')}.tar"
       
       if system("tar -cf #{archive_name} #{source_path}")
-        puts "✓ Archive created: #{archive_name}"
+        puts "Archive created: #{archive_name}"
         archive_name
       else
-        puts "✗ Archive creation failed"
+        puts "Archive creation failed"
         nil
       end
     end
@@ -180,7 +180,7 @@ module RubianFileUtils
         return false
       end
       
-      puts "✓ Extracted: #{archive_path} to #{destination}"
+      puts "Extracted: #{archive_path} to #{destination}"
       true
     end
     
@@ -191,7 +191,7 @@ module RubianFileUtils
       else
         FileUtils.chmod(permissions, path)
       end
-      puts "✓ Permissions changed: #{path} → #{permissions.to_s(8)}"
+      puts "Permissions changed: #{path} -> #{permissions.to_s(8)}"
     end
     
     # Git utilities - interactive git manager
@@ -294,13 +294,13 @@ module RubianFileUtils
       path_input = gets.chomp
       @installer_config[:install_path] = path_input.empty? ? "#{Dir.home}/#{@installer_config[:project_name]}" : path_input
       
-      puts "\n→ Adding dependencies..."
+      puts "\nAdding dependencies..."
       add_dependencies
       
-      puts "\n→ Adding components..."
+      puts "\nAdding components..."
       add_components
       
-      puts "\n✓ Configuration created successfully!"
+      puts "\nConfiguration created successfully!"
       preview_installer
     end
     
@@ -356,7 +356,7 @@ module RubianFileUtils
       @installer_config[:components].each do |name, files|
         puts "  #{name}: #{files.join(', ')}"
       end
-      puts "=================================="
+      puts "===================================="
     end
     
     # Generate the actual installer script
@@ -372,8 +372,8 @@ module RubianFileUtils
       File.write(filename, script_content)
       File.chmod(0755, filename)
       
-      puts "✓ Generated installer: #{filename}"
-      puts "✓ Made executable"
+      puts "Generated installer: #{filename}"
+      puts "Made executable"
     end
     
     # Build the complete installer script content
@@ -580,13 +580,13 @@ module RubianFileUtils
     def save_installer_config(filename)
       filename ||= "#{@installer_config[:project_name]}_config.rb"
       File.write(filename, @installer_config.inspect)
-      puts "✓ Configuration saved: #{filename}"
+      puts "Configuration saved: #{filename}"
     end
     
     def load_installer_config(filename)
       if filename && File.exist?(filename)
         @installer_config = eval(File.read(filename))
-        puts "✓ Configuration loaded: #{filename}"
+        puts "Configuration loaded: #{filename}"
         preview_installer
       else
         puts "Configuration file not found: #{filename}"
@@ -597,7 +597,7 @@ module RubianFileUtils
       puts "Testing installer generation..."
       if @installer_config[:project_name]
         generate_installer_script
-        puts "✓ Test completed - check generated installer"
+        puts "Test completed - check generated installer"
       else
         puts "No configuration to test"
       end
@@ -625,7 +625,7 @@ module RubianFileUtils
         is_last = index == entries.length - 1
         
         current_prefix = is_last ? "└── " : "├── "
-        icon = File.directory?(full_path) ? "📁 " : "📄 "
+        icon = File.directory?(full_path) ? "[DIR] " : "[FILE] "
         puts "#{prefix}#{current_prefix}#{icon}#{entry}"
         
         if File.directory?(full_path) && depth < max_depth
@@ -653,10 +653,10 @@ module RubianFileUtils
       output_file = File.basename(source_file, File.extname(source_file))
       
       if system("gcc #{source_file} -o #{output_file}")
-        puts "✓ Compiled: #{source_file} → #{output_file}"
+        puts "Compiled: #{source_file} -> #{output_file}"
         true
       else
-        puts "✗ Compilation failed"
+        puts "Compilation failed"
         false
       end
     end
@@ -697,9 +697,9 @@ module RubianFileUtils
       puts "Executing: #{cmd}"
       
       if system(cmd)
-        puts "✓ Compilation successful"
+        puts "Compilation successful"
       else
-        puts "✗ Compilation failed"
+        puts "Compilation failed"
       end
     end
     
@@ -712,7 +712,7 @@ module RubianFileUtils
     def clean_compiled_files
       if File.exist?(@output_name)
         File.delete(@output_name)
-        puts "✓ Cleaned: #{@output_name}"
+        puts "Cleaned: #{@output_name}"
       else
         puts "No compiled files to clean"
       end
@@ -863,9 +863,9 @@ module RubianFileUtils
       system("sudo mkdir -p #{mount_point}")
       
       if system("sudo mount /dev/#{device} #{mount_point}")
-        puts "✓ Mounted: /dev/#{device} → #{mount_point}"
+        puts "Mounted: /dev/#{device} -> #{mount_point}"
       else
-        puts "✗ Mount failed"
+        puts "Mount failed"
       end
     end
     
@@ -876,9 +876,9 @@ module RubianFileUtils
       end
       
       if system("sudo umount /dev/#{device}")
-        puts "✓ Unmounted: /dev/#{device}"
+        puts "Unmounted: /dev/#{device}"
       else
-        puts "✗ Unmount failed"
+        puts "Unmount failed"
       end
     end
     
@@ -893,9 +893,9 @@ module RubianFileUtils
       
       if confirmation.downcase == 'y'
         if system("sudo mkfs.ext4 /dev/#{device}")
-          puts "✓ Formatted: /dev/#{device} as ext4"
+          puts "Formatted: /dev/#{device} as ext4"
         else
-          puts "✗ Format failed"
+          puts "Format failed"
         end
       else
         puts "Format cancelled"
